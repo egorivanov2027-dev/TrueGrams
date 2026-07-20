@@ -31,7 +31,11 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        uses: pnpm/action-setup@v4
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build
+        run: pnpm build
 
       - name: Build
         run: npm run build
