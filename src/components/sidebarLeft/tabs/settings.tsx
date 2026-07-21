@@ -76,6 +76,18 @@ const makeSubTabConfig = (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
+// О разработчике — ссылки на канал и личку создателя форка.
+// Открываются через window.open в новой вкладке/системном браузере.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const DEVELOPER_CHANNEL_URL = 'https://t.me/true_vps';
+const DEVELOPER_PERSONAL_URL = 'https://t.me/og_auctioneer';
+
+const openExternalLink = (url: string) => () => {
+  window.open(url, '_blank', 'noopener,noreferrer');
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Tab UI
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -289,6 +301,16 @@ const Settings = () => {
           </Row>
         </Section>
       </Show>
+      <Section name="AboutDeveloperSectionTitle">
+        <Row clickable={openExternalLink(DEVELOPER_CHANNEL_URL)}>
+          <Row.Icon icon="channel" />
+          <Row.Title>Канал создателя</Row.Title>
+        </Row>
+        <Row clickable={openExternalLink(DEVELOPER_PERSONAL_URL)}>
+          <Row.Icon icon="user" />
+          <Row.Title>Написать создателю</Row.Title>
+        </Row>
+      </Section>
     </>
   );
 };
