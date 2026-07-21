@@ -127,6 +127,30 @@ function setManifest() {
   if(manifest) manifest.href = `site${IS_APPLE && !IS_APPLE_MOBILE ? '_apple' : ''}.webmanifest?v=7mQ2pK8xWs`;
 }
 
+// ---------------------------------------------------------------------------
+// Приветственный сплэш TrueGram — полноэкранный оверлей, который появляется
+// сразу при загрузке (до подключения авторизации/чатов) и плавно исчезает
+// через 1.5 секунды.
+// ---------------------------------------------------------------------------
+function showWelcomeSplash() {
+  const splash = document.createElement('div');
+  splash.id = 'truegram-welcome-splash';
+  splash.style.cssText = [
+    'position:fixed', 'inset:0', 'z-index:999999',
+    'display:flex', 'align-items:center', 'justify-content:center',
+    'background:#0e1621', 'color:#fff',
+    'font-size:28px', 'font-weight:600', 'font-family:sans-serif',
+    'transition:opacity .4s ease'
+  ].join(';');
+  splash.textContent = 'Добро пожаловать в TrueGram';
+  document.body.appendChild(splash);
+
+  setTimeout(() => {
+    splash.style.opacity = '0';
+    setTimeout(() => splash.remove(), 400);
+  }, 1500);
+}
+
 function setViewportHeightListeners() {
   // We listen to the resize event (https://css-tricks.com/the-trick-to-viewport-units-on-mobile/)
   const w = window.visualViewport || window; // * handle iOS keyboard
@@ -405,6 +429,7 @@ function setDocumentLangPackProperties(langPack: LangPackDifference.langPackDiff
 };
 
 /* false &&  */document.addEventListener('DOMContentLoaded', async() => {
+  showWelcomeSplash();
   const perf = performance.now();
   randomlyChooseVersionFromSearch();
   setSidebarLeftWidth();
