@@ -38,6 +38,7 @@ import showLogOutPopup from '@components/popups/logOut';
 import {useSuperTab} from '@components/solidJsTabs/superTabProvider';
 import {usePromiseCollector} from '@components/solidJsTabs/promiseCollector';
 import {subscribeOn} from '@helpers/solid/subscribeOn';
+import {isVaultEnabled, setVaultEnabled} from '@lib/truegram/deletedVault';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helper — wraps a sub-tab declaration. If the tab has a static `getInitArgs`,
@@ -229,6 +230,14 @@ const Settings = () => {
   // Lottie workers preload — fire and forget.
   lottieLoader.loadLottieWorkers();
 
+  // ── Toggle: хранить удалённые/изменённые сообщения локально.
+  const [vaultEnabled, setVaultEnabledSignal] = createSignal(isVaultEnabled());
+  const onToggleVault = () => {
+    const next = !vaultEnabled();
+    setVaultEnabled(next);
+    setVaultEnabledSignal(next);
+  };
+
   const onSendGiftClick = () => {
     showPickUserPopup({
       titleLangKey: 'SendGiftTo',
@@ -301,6 +310,14 @@ const Settings = () => {
           </Row>
         </Section>
       </Show>
+      <Section>
+        <Row clickable={onToggleVault}>
+          <Row.Icon icon="delete" />
+          <Row.Title titleRight={vaultEnabled() ? 'Вкл' : 'Выкл'} titleRightSecondary>
+            Хранить удалённые сообщения
+          </Row.Title>
+        </Row>
+      </Section>
       <Section name="AboutDeveloperSectionTitle">
         <Row clickable={openExternalLink(DEVELOPER_CHANNEL_URL)}>
           <Row.Icon icon="channel" />
