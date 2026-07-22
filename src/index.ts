@@ -1,5 +1,32 @@
 /* @refresh reload */
 
+// TrueGram: показываем любую критическую ошибку прямо на экране вместо белого
+// полотна, чтобы можно было прочитать её без консоли/девтулзов.
+(function() {
+  function showFatalError(message: string) {
+    if(document.getElementById('truegram-fatal-error')) return;
+    const box = document.createElement('div');
+    box.id = 'truegram-fatal-error';
+    box.style.cssText = [
+      'position:fixed', 'inset:0', 'z-index:9999999',
+      'background:#1a0000', 'color:#ff6b6b',
+      'font-family:monospace', 'font-size:13px',
+      'padding:16px', 'overflow:auto', 'white-space:pre-wrap',
+      'word-break:break-word'
+    ].join(';');
+    box.textContent = message;
+    document.body?.appendChild(box);
+  }
+
+  window.addEventListener('error', (e) => {
+    showFatalError('JS Error:\n' + (e.error?.stack || e.message));
+  });
+
+  window.addEventListener('unhandledrejection', (e) => {
+    showFatalError('Unhandled Promise Rejection:\n' + (e.reason?.stack || e.reason));
+  });
+})();
+
 // must run before any other module — under the preview flag the first swaps
 // every DOM timer for worker-driven ones (hidden tabs throttle/freeze timers)
 // and spoofs visibility, the second swaps requestAnimationFrame for a timer so
