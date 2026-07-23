@@ -2,6 +2,39 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <script>
+      // TrueGram: перехват ЛЮБОЙ ошибки до загрузки основных модулей.
+      // Стоит в самом верху <head>, срабатывает раньше любого <script type="module">.
+      (function() {
+        function showFatalError(message) {
+          function render() {
+            if(document.getElementById('truegram-fatal-error')) return;
+            var box = document.createElement('div');
+            box.id = 'truegram-fatal-error';
+            box.style.cssText = [
+              'position:fixed', 'inset:0', 'z-index:2147483647',
+              'background:#1a0000', 'color:#ff6b6b',
+              'font-family:monospace', 'font-size:13px',
+              'padding:16px', 'overflow:auto', 'white-space:pre-wrap',
+              'word-break:break-word'
+            ].join(';');
+            box.textContent = message;
+            (document.body || document.documentElement).appendChild(box);
+          }
+          if(document.body) render();
+          else document.addEventListener('DOMContentLoaded', render);
+        }
+
+        window.addEventListener('error', function(e) {
+          showFatalError('JS Error:\n' + (e.error && e.error.stack || e.message + '\n' + e.filename + ':' + e.lineno + ':' + e.colno));
+        });
+
+        window.addEventListener('unhandledrejection', function(e) {
+          var r = e.reason;
+          showFatalError('Unhandled Promise Rejection:\n' + (r && r.stack ? r.stack : r));
+        });
+      })();
+    </script>
     <title>{{title}}</title>
     <meta name="description" content="{{description}}">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=no,viewport-fit=cover">
